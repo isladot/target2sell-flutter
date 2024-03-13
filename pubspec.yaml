@@ -1,6 +1,7 @@
 name: target2sell_flutter
-description: Flutter plugin for Target2Sell integration.
+description: A Flutter package for Target2Sell integration.
 version: 1.0.0
+repository: https://github.com/isladot/target2sell-flutter
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
