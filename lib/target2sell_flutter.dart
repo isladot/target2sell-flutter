@@ -1,8 +1,8 @@
 import 'package:target2sell_flutter/src/errors/target2sell_errors.dart';
+import 'package:target2sell_flutter/src/models/core/target2sell_config.dart';
 import 'package:target2sell_flutter/src/repository/target2sell_repository.dart';
 import 'package:target2sell_flutter/src/services/log_service.dart';
 import 'package:target2sell_flutter/src/services/preferences_service.dart';
-import 'package:target2sell_flutter/target2sell_config.dart';
 import 'package:uuid/uuid.dart';
 
 class Target2Sell {

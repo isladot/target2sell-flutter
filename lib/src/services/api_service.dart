@@ -1,12 +1,15 @@
 import 'package:http/http.dart' as http;
 import 'package:target2sell_flutter/src/models/api/rank_request.dart';
-import 'package:target2sell_flutter/src/models/api/target2sell_user_agent.dart';
 import 'package:target2sell_flutter/src/models/api/tracking_request.dart';
+import 'package:target2sell_flutter/src/services/device_service.dart';
 import 'package:target2sell_flutter/src/services/log_service.dart';
 import 'package:target2sell_flutter/src/utils/const.dart';
 
 class Target2SellApiService {
   Target2SellApiService._();
+
+  static String get _userAgent =>
+      '${DeviceService.appName} / ${DeviceService.appVersion}(${DeviceService.packageName}; build:${DeviceService.appBuildNumber}; ${DeviceService.platform} ${DeviceService.osVersion} / ${DeviceService.deviceName}';
 
   static Future<String> getRank({
     required RankRequest rankRequest,
@@ -36,7 +39,7 @@ class Target2SellApiService {
       final resp = await http.post(
         Uri.parse(Uri.encodeFull(baseRankUrl)),
         headers: {
-          'User-Agent': Target2SellUserAgent.userAgent,
+          'User-Agent': _userAgent,
         },
         body: trackingRequest.toJson(),
       );
