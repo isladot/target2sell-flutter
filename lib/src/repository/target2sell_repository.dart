@@ -4,59 +4,110 @@ import 'package:target2sell_flutter/src/models/api/tracking_request.dart';
 import 'package:target2sell_flutter/src/services/api_service.dart';
 import 'package:target2sell_flutter/src/services/log_service.dart';
 import 'package:target2sell_flutter/src/services/preferences_service.dart';
+import 'package:target2sell_flutter/src/utils/const.dart';
 import 'package:target2sell_flutter/src/utils/utils.dart';
-import 'package:target2sell_flutter/target2sell_config.dart';
 
 class Target2SellRepository {
-  final Target2SellConfiguration config;
+  Target2SellRepository._();
 
-  Target2SellRepository({
-    required this.config,
-  });
+  static String? get uuid => Target2SellPreferences.getUUID();
+  static String get rank {
+    final rank = Target2SellPreferences.getRank();
 
-  static String? get _uuid => Target2SellPreferences.getUUID();
-  static String? get _rank {
-    String? rank = Target2SellPreferences.getRank();
-
-    if (rank.isNullOrEmpty()) {
-      LogService.logger.d('Rank not found in preferences. Using default rank.');
-      return '{"rank": "rank1"}';
-    } else {
-      LogService.logger.d('Rank found in preferences: $rank');
-      return rank;
-    }
-  }
-
-  Future<String?> getRank() async {
-    if (_uuid.isNullOrEmpty()) {
-      throw Target2SellUUIDMissingError();
-    } else {
-      final String? rank = await Target2SellApiService.getRank(
-        rankRequest: RankRequest(
-          customerId: config.customerId,
-          userId: _uuid!,
-        ),
+    if (rank.isNullOrEmpty) {
+      LogService.logger.d(
+        'Target2SellRepository [rank]: Rank not found in preferences. Returning default rank.',
       );
 
-      return rank;
+      return defaultRank;
+    } else {
+      LogService.logger.d(
+        'Target2SellRepository [rank]: Rank found in preferences. Returning $rank.',
+      );
+
+      return rank!;
     }
   }
 
-  Future<String?> sendTracking({
+  static Future<String> retrieveAndStoreRank({
+    required String customerId,
+    String? pageId,
+  }) async {
+    LogService.logger.d(
+      'Target2SellRepository [retrieveAndStoreRank]: Processing request for UUID $uuid',
+    );
+
+    if (uuid.isNullOrEmpty) {
+      LogService.logger.e(
+        'Target2SellRepository [retrieveAndStoreRank]: ${Target2SellUUIDMissingError.message}',
+      );
+
+      throw Target2SellUUIDMissingError();
+    } else {
+      try {
+        final rank = await Target2SellApiService.getRank(
+          rankRequest: RankRequest(
+            customerId: customerId,
+            userId: uuid!,
+            pageId: pageId,
+          ),
+        );
+
+        LogService.logger.d(
+          'Target2SellRepository [retrieveAndStoreRank]: Request successful. Storing rank.',
+        );
+
+        Target2SellPreferences.setRank(rank);
+        return rank;
+      } catch (error, stackTrace) {
+        LogService.logger.e(
+          'Target2SellRepository [retrieveAndStoreRank]: Error retrieving rank.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+
+        rethrow;
+      }
+    }
+  }
+
+  static Future<String> sendTracking({
+    required String customerId,
     required int pageId,
   }) async {
-    if (_uuid.isNullOrEmpty()) {
+    LogService.logger.d(
+      'Target2SellRepository [sendTracking]: Processing request.',
+    );
+
+    if (uuid.isNullOrEmpty) {
+      LogService.logger.e(
+        'Target2SellRepository [sendTracking]: ${Target2SellUUIDMissingError.message}',
+      );
       throw Target2SellUUIDMissingError();
     } else {
-      final String? tracking = await Target2SellApiService.sendTracking(
-        trackingRequest: TrackingRequest(
-          customerId: config.customerId,
-          pageId: pageId,
-          sessionId: _uuid!,
-        ),
-      );
+      try {
+        final tracking = await Target2SellApiService.sendTracking(
+          trackingRequest: TrackingRequest(
+            customerId: customerId,
+            pageId: pageId,
+            sessionId: uuid!,
+          ),
+        );
 
-      return tracking;
+        LogService.logger.d(
+          'Target2SellRepository [sendTracking]: Request successful.',
+        );
+
+        return tracking;
+      } catch (error, stackTrace) {
+        LogService.logger.e(
+          'Target2SellRepository [sendTracking]: Error sending tracking.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+
+        rethrow;
+      }
     }
   }
 }

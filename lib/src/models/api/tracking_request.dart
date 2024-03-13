@@ -1,32 +1,4 @@
 class TrackingRequest {
-  final String customerId;
-  final int pageId;
-  final String sessionId;
-  final String? setId;
-  final String? userEmail;
-  final String? userId;
-  final String? eventType;
-  final String? spaceId;
-  final String? productPosition;
-  final String? basketProduct;
-  final String? language;
-  final String? domain;
-  final String? itemId;
-  final int? categoryId;
-  final String? cartTotalAmount;
-  final String? productQuantity;
-  final String? keywords;
-  final String? orderId;
-  final String? priceList;
-  final String? userRank;
-  final String? crmXXX;
-  final String? mediaRuleId;
-  final String? algorithm;
-  final String? mediaCampaignId;
-  final String? mediaAlgo;
-  final String? any;
-  final String? trackingId;
-
   TrackingRequest({
     required this.customerId,
     required this.pageId,
@@ -56,6 +28,34 @@ class TrackingRequest {
     this.any,
     this.trackingId,
   });
+
+  final String customerId;
+  final int pageId;
+  final String sessionId;
+  final String? setId;
+  final String? userEmail;
+  final String? userId;
+  final String? eventType;
+  final String? spaceId;
+  final String? productPosition;
+  final String? basketProduct;
+  final String? language;
+  final String? domain;
+  final String? itemId;
+  final int? categoryId;
+  final String? cartTotalAmount;
+  final String? productQuantity;
+  final String? keywords;
+  final String? orderId;
+  final String? priceList;
+  final String? userRank;
+  final String? crmXXX;
+  final String? mediaRuleId;
+  final String? algorithm;
+  final String? mediaCampaignId;
+  final String? mediaAlgo;
+  final String? any;
+  final String? trackingId;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'cID': customerId,

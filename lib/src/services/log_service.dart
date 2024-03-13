@@ -10,20 +10,17 @@ class LogService {
       printer: _Target2SellLogPrinter(),
       level: displayDebugLogs ? Level.debug : Level.error,
     );
+    logger.d('LogService: Initialized.');
   }
 }
 
 class _Target2SellLogPrinter extends PrettyPrinter {
-  _Target2SellLogPrinter({
-    bool printTime = true,
-  }) : super(printTime: printTime);
+  _Target2SellLogPrinter();
 
   @override
   List<String> log(LogEvent event) {
-    final List<String> log = super.log(event);
+    final log = super.log(event);
 
-    log.add('Target2Sell: ${event.message}');
-
-    return log;
+    return log..add('Target2Sell: ${event.message}');
   }
 }

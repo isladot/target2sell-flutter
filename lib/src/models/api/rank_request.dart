@@ -1,13 +1,13 @@
 class RankRequest {
-  final String customerId;
-  final String userId;
-  final String? pageId;
-
   RankRequest({
     required this.customerId,
     required this.userId,
     this.pageId,
   });
+
+  final String customerId;
+  final String userId;
+  final String? pageId;
 
   Map<String, String> toJson() => pageId != null
       ? <String, String>{
