@@ -10,9 +10,9 @@ import 'package:target2sell_flutter/src/utils/utils.dart';
 class Target2SellRepository {
   Target2SellRepository._();
 
-  static String? get uuid => Target2SellPreferences.getUUID();
+  static String? get uuid => Target2SellPreferences.getUUIDFromPreferences();
   static String get rank {
-    final rank = Target2SellPreferences.getRank();
+    final rank = Target2SellPreferences.getRankFromPreferences();
 
     if (rank.isNullOrEmpty) {
       LogService.logger.d(
@@ -57,7 +57,8 @@ class Target2SellRepository {
           'Target2SellRepository [retrieveAndStoreRank]: Request successful. Storing rank.',
         );
 
-        Target2SellPreferences.setRank(rank);
+        Target2SellPreferences.setRankInPreferences(rank);
+
         return rank;
       } catch (error, stackTrace) {
         LogService.logger.e(

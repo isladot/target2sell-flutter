@@ -15,9 +15,16 @@ class Target2SellApiService {
     required RankRequest rankRequest,
   }) async {
     try {
+      var uri = '$baseRankUrl?userCookie=${rankRequest.userId}';
+      if (rankRequest.pageId != null) {
+        uri += '&setId=${rankRequest.pageId}';
+      }
+
       final resp = await http.get(
-        Uri.parse(Uri.encodeFull(baseRankUrl)),
-        headers: rankRequest.toJson(),
+        Uri.parse(Uri.encodeFull(uri)),
+        headers: {
+          't2s-customer-id': rankRequest.customerId,
+        },
       );
 
       LogService.logger.d(
@@ -39,6 +46,7 @@ class Target2SellApiService {
       final resp = await http.post(
         Uri.parse(Uri.encodeFull(baseRankUrl)),
         headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
           'User-Agent': _userAgent,
         },
         body: trackingRequest.toJson(),

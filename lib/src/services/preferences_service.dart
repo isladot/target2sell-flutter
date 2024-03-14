@@ -16,10 +16,10 @@ class Target2SellPreferences {
     LogService.logger.d('PreferencesService: Initialized.');
   }
 
-  static String? getUUID() => _preferences.getString(t2sUUID);
+  static String? getUUIDFromPreferences() => _preferences.getString(t2sUUID);
 
-  static void setUUIDIfNotSet(String value) {
-    if (getUUID().isNullOrEmpty) {
+  static void setUUIDIfNotSetInPreferences(String value) {
+    if (getUUIDFromPreferences().isNullOrEmpty) {
       _preferences.setString(t2sUUID, value);
       LogService.logger.d(
         'PreferencesService: UUID $value stored.',
@@ -27,10 +27,12 @@ class Target2SellPreferences {
     }
   }
 
-  static String? getRank() => _preferences.getString(t2sRank);
+  static String? getRankFromPreferences() => _preferences.getString(t2sRank);
 
-  static void setRank(String value) {
+  static void setRankInPreferences(String value) {
     _preferences.setString(t2sRank, value);
-    LogService.logger.d('PreferencesService: Rank $value stored.');
+    LogService.logger.d(
+      'PreferencesService: Rank $value stored.',
+    );
   }
 }

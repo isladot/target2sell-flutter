@@ -5,6 +5,8 @@ import 'package:target2sell_flutter/src/services/log_service.dart';
 import 'package:target2sell_flutter/src/services/preferences_service.dart';
 import 'package:uuid/uuid.dart';
 
+export 'package:target2sell_flutter/src/models/core/target2sell_config.dart';
+
 class Target2Sell {
   Target2Sell({
     required Target2SellConfiguration config,
@@ -33,7 +35,7 @@ class Target2Sell {
     LogService.init(displayDebugLogs: enableDebugLogs);
 
     await Target2SellPreferences.init().then((_) {
-      Target2SellPreferences.setUUIDIfNotSet(const Uuid().v4());
+      Target2SellPreferences.setUUIDIfNotSetInPreferences(const Uuid().v4());
     });
 
     await Target2SellRepository.retrieveAndStoreRank(
