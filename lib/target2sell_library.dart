@@ -59,8 +59,8 @@ class Target2Sell {
       _executeApiCall<String>(
         call: () => Target2SellRepository.sendTracking(
           trackingRequest: trackingRequest
-            ..customerId = customerId
-            ..sessionId = getUUID()
+            ..customerID = customerId
+            ..sessionID = getUUID()
             ..userRank = getRank(),
         ),
       );
