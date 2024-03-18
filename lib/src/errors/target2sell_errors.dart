@@ -4,7 +4,7 @@ sealed class Target2SellError extends Error {
   final String _message;
 
   @override
-  String toString({String message = ''}) => 'Target2SellError: $_message';
+  String toString() => 'Target2SellError: $_message';
 }
 
 class Target2SellUUIDMissingError extends Target2SellError {

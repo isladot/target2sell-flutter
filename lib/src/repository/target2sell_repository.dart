@@ -10,7 +10,24 @@ import 'package:target2sell_flutter/src/utils/utils.dart';
 class Target2SellRepository {
   Target2SellRepository._();
 
-  static String? get uuid => Target2SellPreferences.getUUIDFromPreferences();
+  static String get uuid {
+    final uuid = Target2SellPreferences.getUUIDFromPreferences();
+
+    if (uuid.isNullOrEmpty) {
+      LogService.logger.e(
+        'Target2SellRepository [uuid]: ${Target2SellUUIDMissingError.message}',
+      );
+
+      throw Target2SellUUIDMissingError();
+    } else {
+      LogService.logger.d(
+        'Target2SellRepository [uuid]: UUID found in preferences. Returning $uuid.',
+      );
+
+      return uuid!;
+    }
+  }
+
   static String get rank {
     final rank = Target2SellPreferences.getRankFromPreferences();
 
@@ -37,78 +54,58 @@ class Target2SellRepository {
       'Target2SellRepository [retrieveAndStoreRank]: Processing request for UUID $uuid',
     );
 
-    if (uuid.isNullOrEmpty) {
-      LogService.logger.e(
-        'Target2SellRepository [retrieveAndStoreRank]: ${Target2SellUUIDMissingError.message}',
+    try {
+      final rank = await Target2SellApiService.getRank(
+        rankRequest: Target2SellRankRequest(
+          customerId: customerId,
+          userId: uuid,
+          pageId: pageId,
+        ),
       );
 
-      throw Target2SellUUIDMissingError();
-    } else {
-      try {
-        final rank = await Target2SellApiService.getRank(
-          rankRequest: RankRequest(
-            customerId: customerId,
-            userId: uuid!,
-            pageId: pageId,
-          ),
-        );
+      Target2SellPreferences.setRankInPreferences(rank);
 
-        LogService.logger.d(
-          'Target2SellRepository [retrieveAndStoreRank]: Request successful. Storing rank.',
-        );
+      LogService.logger.d(
+        'Target2SellRepository [retrieveAndStoreRank]: Request successful. Rank $rank stored in preferences.',
+      );
 
-        Target2SellPreferences.setRankInPreferences(rank);
+      return rank;
+    } catch (error, stackTrace) {
+      LogService.logger.e(
+        'Target2SellRepository [retrieveAndStoreRank]: Error retrieving rank.',
+        error: error,
+        stackTrace: stackTrace,
+      );
 
-        return rank;
-      } catch (error, stackTrace) {
-        LogService.logger.e(
-          'Target2SellRepository [retrieveAndStoreRank]: Error retrieving rank.',
-          error: error,
-          stackTrace: stackTrace,
-        );
-
-        rethrow;
-      }
+      rethrow;
     }
   }
 
   static Future<String> sendTracking({
-    required String customerId,
-    required int pageId,
+    required Target2SellTrackingRequest trackingRequest,
   }) async {
     LogService.logger.d(
-      'Target2SellRepository [sendTracking]: Processing request.',
+      'Target2SellRepository [sendTracking]: Processing request for UUID $uuid.',
     );
 
-    if (uuid.isNullOrEmpty) {
-      LogService.logger.e(
-        'Target2SellRepository [sendTracking]: ${Target2SellUUIDMissingError.message}',
+    try {
+      final tracking = await Target2SellApiService.sendTracking(
+        trackingRequest: trackingRequest,
       );
-      throw Target2SellUUIDMissingError();
-    } else {
-      try {
-        final tracking = await Target2SellApiService.sendTracking(
-          trackingRequest: TrackingRequest(
-            customerId: customerId,
-            pageId: pageId,
-            sessionId: uuid!,
-          ),
-        );
 
-        LogService.logger.d(
-          'Target2SellRepository [sendTracking]: Request successful.',
-        );
+      LogService.logger.d(
+        'Target2SellRepository [sendTracking]: Request successful.',
+      );
 
-        return tracking;
-      } catch (error, stackTrace) {
-        LogService.logger.e(
-          'Target2SellRepository [sendTracking]: Error sending tracking.',
-          error: error,
-          stackTrace: stackTrace,
-        );
+      return tracking;
+    } catch (error, stackTrace) {
+      LogService.logger.e(
+        'Target2SellRepository [sendTracking]: Error sending tracking.',
+        error: error,
+        stackTrace: stackTrace,
+      );
 
-        rethrow;
-      }
+      rethrow;
     }
   }
 }

@@ -11,40 +11,16 @@ class Target2SellApiService {
   static String get _userAgent =>
       '${DeviceService.appName} / ${DeviceService.appVersion}(${DeviceService.packageName}; build:${DeviceService.appBuildNumber}; ${DeviceService.platform} ${DeviceService.osVersion} / ${DeviceService.deviceName}';
 
-  static Future<String> getRank({
-    required RankRequest rankRequest,
-  }) async {
-    try {
-      var uri = '$baseRankUrl?userCookie=${rankRequest.userId}';
-      if (rankRequest.pageId != null) {
-        uri += '&setId=${rankRequest.pageId}';
-      }
-
-      final resp = await http.get(
-        Uri.parse(Uri.encodeFull(uri)),
-        headers: {
-          't2s-customer-id': rankRequest.customerId,
-        },
-      );
-
-      LogService.logger.d(
-        'Target2SellApiService [getRank]: ${resp.statusCode} - ${resp.body}',
-      );
-
-      return resp.statusCode == 204 ? defaultRank : resp.body;
-    } catch (e) {
-      LogService.logger.e('Target2SellApiService [getRank]: $e');
-
-      rethrow;
-    }
-  }
-
   static Future<String> sendTracking({
-    required TrackingRequest trackingRequest,
+    required Target2SellTrackingRequest trackingRequest,
   }) async {
     try {
       final resp = await http.post(
-        Uri.parse(Uri.encodeFull(baseRankUrl)),
+        Uri.parse(
+          Uri.encodeFull(
+            baseTrackingUrl,
+          ),
+        ),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'User-Agent': _userAgent,
@@ -59,6 +35,33 @@ class Target2SellApiService {
       return resp.body;
     } catch (e) {
       LogService.logger.e('Target2SellApiService [sendTracking]: $e');
+
+      rethrow;
+    }
+  }
+
+  static Future<String> getRank({
+    required Target2SellRankRequest rankRequest,
+  }) async {
+    try {
+      final resp = await http.get(
+        Uri.parse(
+          Uri.encodeFull(
+            '$baseRankUrl?userCookie=${rankRequest.userId}${rankRequest.pageId != null ? '&setId=${rankRequest.pageId}' : ''}',
+          ),
+        ),
+        headers: {
+          't2s-customer-id': rankRequest.customerId,
+        },
+      );
+
+      LogService.logger.d(
+        'Target2SellApiService [getRank]: ${resp.statusCode} - ${resp.body}',
+      );
+
+      return resp.statusCode == 200 ? resp.body : defaultRank;
+    } catch (e) {
+      LogService.logger.e('Target2SellApiService [getRank]: $e');
 
       rethrow;
     }

@@ -20,7 +20,7 @@ class DeviceService {
     } else if (Platform.isIOS) {
       _iosDeviceInfo = await deviceInfo.iosInfo;
     } else {
-      throw UnsupportedError('Unsupported Platform');
+      throw UnsupportedError('DeviceService: Unsupported platform.');
     }
 
     _packageInfo = await PackageInfo.fromPlatform();

@@ -1,5 +1,5 @@
-class RankRequest {
-  RankRequest({
+class Target2SellRankRequest {
+  Target2SellRankRequest({
     required this.customerId,
     required this.userId,
     this.pageId,
@@ -19,4 +19,7 @@ class RankRequest {
           't2s-customer-id': customerId,
           'userCookie': userId,
         };
+
+  @override
+  String toString() => toJson().toString();
 }
