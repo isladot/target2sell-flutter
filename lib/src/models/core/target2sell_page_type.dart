@@ -1,18 +1,47 @@
 enum Target2SellPageType {
+  /// pID: 1000
   homepage,
+
+  /// pID: 1200
   productPage,
+
+  /// pID: 1400
   productListingPage,
+
+  /// pID: 1600
   cartPage,
+
+  /// pID: 1800
   comparatorPage,
+
+  /// pID: 2000
   searchResultPage,
+
+  /// pID: 2200
   noResultSearchPage,
+
+  /// pID: 2400
   contentPage,
+
+  /// pID: 2600
   postPaymentPage,
+
+  /// pID: 2800
   loginPage,
+
+  /// pID: 3000
   accountCreationStartPage,
+
+  /// pID: 3200
   accountCreationEndPage,
+
+  /// pID: 3400
   purchaseBeginPage,
+
+  /// pID: 3600
   pageNotFoundPage,
+
+  /// pID: 4000
   addProductToCartPopup;
 
   int get id {

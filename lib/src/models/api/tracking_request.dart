@@ -10,11 +10,11 @@ class Target2SellTrackingRequest {
     this.trackingId,
     this.spaceID,
     this.shopID,
-    this.cartProducts,
+    this.cartProductsIDs,
     this.language,
     this.domain,
-    this.pageProducts,
-    this.categoriesID,
+    this.pageProductsIDs,
+    this.categoriesIDs,
     this.productRecommendationRule,
     this.cartTotal,
     this.cartProductsQuantities,
@@ -25,7 +25,43 @@ class Target2SellTrackingRequest {
     this.mediaRuleId,
     this.mediaCampaignId,
     this.mediaAlgo,
-  });
+  })  : assert(
+          pageType != Target2SellPageType.purchaseBeginPage ||
+              (userEmail != null && userID != null),
+          '$userEmail and $userID are mandatory on a "Purchase begin page"',
+        ),
+        assert(
+          eventType != Target2SellEventType.click || spaceID != null,
+          '$spaceID is mandatory on a ${Target2SellEventType.click} event',
+        ),
+        assert(
+          (pageType != Target2SellPageType.productPage &&
+                  pageType != Target2SellPageType.addProductToCartPopup &&
+                  pageType != Target2SellPageType.searchResultPage &&
+                  pageType != Target2SellPageType.postPaymentPage) ||
+              pageProductsIDs != null,
+          '$pageProductsIDs is mandatory on "Product page", "Cart page", "Add-to-cart page", "Search result page" and "Post-payment page"',
+        ),
+        assert(
+          pageType != Target2SellPageType.productListingPage ||
+              categoriesIDs != null,
+          '$categoriesIDs is mandatory on a "Product listing page"',
+        ),
+        assert(
+          (pageType != Target2SellPageType.cartPage &&
+                  pageType != Target2SellPageType.postPaymentPage) ||
+              (cartTotal != null && cartProductsQuantities != null),
+          '$cartTotal and $cartProductsQuantities are mandatory on "Cart page" and "Post-payment page"',
+        ),
+        assert(
+          pageType != Target2SellPageType.searchResultPage ||
+              searchKeywords != null,
+          '$searchKeywords is mandatory on a "Search result page"',
+        ),
+        assert(
+          pageType != Target2SellPageType.postPaymentPage || orderId != null,
+          '$orderId is mandatory on a "Post-payment page"',
+        );
 
   /// cID - Customer ID
   String? customerID;
@@ -77,7 +113,7 @@ class Target2SellTrackingRequest {
   /// The formatting will be performed by the Target2Sell library in the toJson method.
   ///
   /// Example: p456|p76|p890|p56
-  final List<String>? cartProducts;
+  final List<String>? cartProductsIDs;
 
   /// lang - Language
   final String? language;
@@ -98,7 +134,7 @@ class Target2SellTrackingRequest {
   /// **Mandatory** on a *"Product page"*, *"Cart page"*, *"Add-to-cart page"*, *"Search result page"* and *"Post-payment page"*.
   ///
   /// Example: p456|p76|p890|p56
-  final List<String>? pageProducts;
+  final List<String>? pageProductsIDs;
 
   /// aId - Category ID
   ///
@@ -107,7 +143,7 @@ class Target2SellTrackingRequest {
   /// The formatting will be performed by the Target2Sell library in the toJson method.
   ///
   /// **Mandatory** on a *"Product listing page"*.
-  final List<String>? categoriesID;
+  final List<String>? categoriesIDs;
 
   /// ru - Recommendation Rule
   ///
@@ -184,11 +220,11 @@ class Target2SellTrackingRequest {
         'trackingId': trackingId,
         'sp': spaceID,
         'setID': shopID,
-        'bP': cartProducts?.join('|'),
+        'bP': cartProductsIDs?.join('|'),
         'lang': language,
         'domain': domain,
-        'iID': pageProducts?.join('|'),
-        'aId': categoriesID?.join('|'),
+        'iID': pageProductsIDs?.join('|'),
+        'aId': categoriesIDs?.join('|'),
         'ru': productRecommendationRule,
         'bs': cartTotal?.toString(),
         'qTE': cartProductsQuantities?.join('|'),
